@@ -1,0 +1,36 @@
+rewind prend une FILE* en argument seul :->  c'est une fonction de la libc pas un syscall(appel systeme).
+Exo2 en entier (bufferisation) en libc_and_buffers.c
+//commentaire dans le fichier.
+=>passons a l'exo3:
+UN MOT SUR l'exo2 d'abord:
+>
+-**si on enleve le \n, et on affiche avec make buffer ; ./buffer
+ca va faire sur le terminal:
+FinDebut.
+Pourquoi?
+Analysons pas a pas:
+d'abord avec ./buffer, on utilise que des write
+on fait un write de la CHAINE1 sur stdout
+puis la meme chose pour la CHAINE2.
+On s'est trompé, ca serait: DebutFin. 
+sans flags.//
+Il y a pas de bufferisation au niveau des appels systemes, difference avec les printf ou les 
+fprintf dans stdout %s CHAINE1;2 .(selon les flags)
+C'est pour cela, la commande suivante affichera: FinDebut:>>>
+rm -f buffer && make buffer CFLAGS+="-DUTILISER_FPRINTF1"
+parceque on demande que Debut soit via un printf soit bufferisation (il y a pas de \n ou de fflush pour terminer la bufferisation, vient le write qui fait tout et pour en finir Debut, c'est pour cela).
+Par contre, celle-ci rappelle le bon affichage d'hab.::
+rm -f buffer && make buffer CFLAGS+="-DUTILISER_FPRINTF2 -DUTILISER_SORTIE_ERREUR2"
+**_**On ecrit le write Debut et pour Fin via printf dans la sortie d'erreur qui se lance dans le stdout soit end of bufferisation(continuation()) pour affiche CHAINE2 en continu. Voilà.
+^-^Le contraire pour: rm -f buffer && make buffer CFLAGS+="-DUTILISER_FPRINTF1 -DUTILISER_FPRINTF2 -DUTILISER_SORTIE_ERREUR2"
+<< car on va printf pour les 2 chaines et utiliser la sortie d'erreur pour la 2, c'est la 2 qui sera en premier puis la fin du programme fait un fflush et affiche la 1 soit CHAIEN2 puis CHAINE1 en affichage standard.  
+FIN_EXPLICATIONS. 
+========================================================
+EXO1/OK; exo2:>>
+========================================================
+On fait en pratique ceci dans un scenario de printf avec write/\n/fflush \n parait naturel dans l'affichage de pid de fils/parents qui sortent ces fils.
+========================================================
+EXO1/ok,2;3:OK:EXO4:
+lance.c::
+voire les commentaire.
+FIN_TD3.(bufferisation && fork)
